@@ -26,7 +26,7 @@ EXAMPLES
 36:14:08
 ```
 
-1. Check if the following configuration is correct:
+2. Check if the following configuration is correct:
 	ring gear   = 36 teeth
 	planet gear = 14 teeth
 	sun gear    = 7 teeth
