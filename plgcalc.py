@@ -2,7 +2,6 @@
 
 import sys
 import argparse
-from os import path
 
 # globals
 parser = argparse.ArgumentParser(description='Planetary gear calculator')
@@ -23,11 +22,13 @@ class CONFIG:
     ring   = 0
     planet = 0
     sun    = 0
+    limit  = 50
     print_header = False
     print_tps    = False
     print_tpr    = False
     print_tsr    = False
     print_angle  = False
+    min_teeth = 4
 
     # transform command line options into program configuration
     @staticmethod
@@ -59,13 +60,21 @@ class CONFIG:
         try:
             R,P,S = str(args.gear).split(':',3)
         except:
-            warning("Invalid arguments format")
-            usage()
+            warning("Invalid gear configuration format")
             exit()
 
         CONFIG.ring   = convert_to_int(R)
         CONFIG.planet = convert_to_int(P)
         CONFIG.sun    = convert_to_int(S)
+
+        # copy configurations limit
+        CONFIG.limit = args.limit
+        if CONFIG.limit == 0:
+            warning("Invalid number of configurations (0)")
+            exit()
+
+        # copy min_teeth
+        CONFIG.min_teeth = args.min_teeth
 
 #
 # helper functions
@@ -76,8 +85,8 @@ def convert_to_int(string):
     except: return 0
 
 def warning(warn):
-    #sys.stderr.write("Warning: %s\n" % warn)
-    print warn
+    sys.stderr.write("Warning: %s\n" % warn)
+    #print warn
 
 def valid_planetary(ring, planet, sun, even_planets):
     # check if R = 2 * P + S
@@ -184,9 +193,7 @@ def prepare_arguments():
 
     parser.add_argument(
             '--examples',
-            dest='actions',
-            action='store_const',
-            const="ex", # dummy
+            metavar="",
             help='Print some usage examples as extended help')
 
     parser.add_argument(
@@ -252,21 +259,23 @@ def prepare_arguments():
             const=OPTIONS.PRINT_ANG,
             help="Print sun-planets angle")
 
+    parser.add_argument(
+            '--min-teeth',
+            type=int,
+            default=4,
+            metavar="P",
+            help='Minimum number of teeth to use when generating configurations (default: 4)')
+
 def parse_input_params():
 
-    global args, parser, ring, planet, sun
+    global args, parser
 
     # parse arguments
     prepare_arguments()
     args = parser.parse_args()
 
     # validate input
-    if args.actions is None: args.actions = []
     if args.options is None: args.options = []
-
-    if args.limit == 0:
-        warning("Invalid linit of configurations (0)")
-        exit()
 
     CONFIG.from_options(args.options)
 
@@ -291,14 +300,18 @@ def generate_possible_configurations(ring, planet, sun):
         even_planets = args.planets
 
 
+    #
     # all set - just validate configuration
+    #
     if cnt_defined == 3:
         if valid_planetary(ring, planet, sun, even_planets):
             return [(ring,planet,sun)]
         else:
             return "invalid gear configuration"
 
+    #
     # two set - one to calculate
+    #
     if cnt_defined == 2:
         # calculate ring
         if ring == 0:
@@ -314,13 +327,18 @@ def generate_possible_configurations(ring, planet, sun):
         elif sun == 0:
             sun = ring - planet * 2
 
-        # done
         if valid_planetary(ring, planet, sun, even_planets):
+
+            if ring == 0 or planet == 0 or sun == 0:
+                return "invalid gear configuration (0 teeth)"
+
             return [(ring,planet,sun)]
         else:
             return "invalid gear configuration"
 
+    #
     # one set - two to generate
+    #
     if cnt_defined == 1:
 
         result = []
@@ -333,9 +351,9 @@ def generate_possible_configurations(ring, planet, sun):
                 if ring % even_planets != 0:
                     return "invalid ring configuration, planets will never be evenly spaced"
 
-            limit = args.limit
+            limit = CONFIG.limit
 
-            for p in xrange(2,ring/2):
+            for p in xrange(CONFIG.min_teeth, ring/2 - CONFIG.min_teeth + 1):
                 if valid_planetary(ring,p,ring - 2 * p,even_planets):
                     if limit : limit = limit - 1
                     result.append((ring,p,ring - 2 * p) )
@@ -344,15 +362,13 @@ def generate_possible_configurations(ring, planet, sun):
         # SUN set :) => generate possible RING and PLANET
         # need additional turn ration TRP (RING/PLANET) set
         if sun != 0:
-            if args.limit == 0:
-                return "limit must be set, check help"
 
             # check even spacing option
             if even_planets is not None:
                 if sun % even_planets != 0:
                     return "invalid sun configuration, planets will never be evenly spaced"
 
-            p = 1
+            p = CONFIG.min_teeth
             limit = args.limit
 
             while( True ):
@@ -365,15 +381,12 @@ def generate_possible_configurations(ring, planet, sun):
                 p = p + 1
 
         if planet != 0:
-            if args.limit == 0:
-                return "limit must be set, check help"
-
             # check even spacing option
             if even_planets is not None:
                 if planet % even_planets != 0:
                     return "invalid planet configuration, planets will never be evenly spaced"
 
-            s = 1
+            s = CONFIG.min_teeth
             limit = args.limit
 
             while( True ):
@@ -399,7 +412,7 @@ parse_input_params()
 results = generate_possible_configurations(CONFIG.ring,CONFIG.planet,CONFIG.sun)
 
 # printout error
-if results == None:
+if results == None or len(results) == 0:
     warning("No results possible")
 elif type(results) == str:
     warning("No results possible: %s" % results)
