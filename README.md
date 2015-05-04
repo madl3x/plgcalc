@@ -16,7 +16,7 @@ This calculator helps generating these possible gear configurations while calcul
 ----------
 EXAMPLES
 ----------
-1. Check if the following configuration is correct:
+* Check if the following configuration is correct:
 	ring gear   = 36 teeth
 	planet gear = 14 teeth
 	sun gear    = 8 teeth
@@ -26,7 +26,7 @@ EXAMPLES
 36:14:08
 ```
 
-2. Check if the following configuration is correct:
+* Check if the following configuration is correct:
 	ring gear   = 36 teeth
 	planet gear = 14 teeth
 	sun gear    = 7 teeth
@@ -36,7 +36,7 @@ EXAMPLES
 No results possible: invalid gear configuration
 ```
 
-3. Print out all data regarding the first configuration:
+* Print out all data regarding the first configuration:
 
 ```
 > plgcalc.py 36:14:8 --all
@@ -45,7 +45,7 @@ Configuration   Ring fixed      Sun fixed       Planets fixed   Planet-Sun
 36:14:08        0.181818        0.818182        -4.500000       8.181818
 ```
 
-4. Check the configuration that is possible for a planetary having:
+* Check the configuration that is possible for a planetary having:
 	ring gear   = 42 teeth
 	planet gear = 18 teeth
 	sun gear    = any
@@ -57,7 +57,7 @@ Configuration   Ring fixed      Sun fixed       Planets fixed   Planet-Sun
 42:18:06        0.875000
 ```
 
-5. Print 10 possible configurations for a planetary setup that has:
+* Print 10 possible configurations for a planetary setup that has:
 	sun gear    = 12 teeth
 	
    Note: for the resulting configurations print Planets-Sun turn ratio (ring is fixed)
@@ -78,7 +78,7 @@ Configuration   Ring fixed
 32:10:12        0.272727
 ```
 
-6. Generate all possible configurations for a planetary gear set with following params:
+* Generate all possible configurations for a planetary gear set with following params:
 	sun gear    = 9 teeth
 	planets     = 3 (evenly distributed)
 
@@ -96,7 +96,7 @@ Configuration   Ring fixed
 69:30:09
 ```
 
-7. Same as above, but also print calculated ratios:
+* Same as above, but also print calculated ratios:
 
 ```
 > plgcalc.py ::9 -l 10 -e -p 3 --all
@@ -114,7 +114,7 @@ Configuration   Ring fixed      Sun fixed       Planets fixed   Planet-Sun
 69:30:09        0.115385        0.884615        -7.666667       4.615385
 ```
 
-8. Same as above, but use sun gear with 8 teeth, which  is an invalid configuration:
+* Same as above, but use sun gear with 8 teeth, which  is an invalid configuration:
 
 ```
 > plgcalc.py ::8 -l 10 -e -p 3 --all
