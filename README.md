@@ -1,7 +1,6 @@
-Python planetary gear calculator
-----------
-DESCRIPTION
-----------
+#Python planetary gear calculator
+
+###DESCRIPTION
 
 Planetary gears must respect certain mathematical equations in order to work properly. One basic rule is that the number of teeth the ring gear must be equal to twice the number of teeth the planet gear have plus the number of teeth the sun gear has. 
 
@@ -13,31 +12,22 @@ Another is that for a planetary gear ccnfiguration with an even distribution of 
 
 This calculator helps generating these possible gear configurations while calculating turn ratios in different scenarios: when ring gear is fixed, when carrier (planets  position) is fixed or when sun is fixed.
 
-----------
-EXAMPLES
-----------
-* Check if the following configuration is correct:
-	ring gear   = 36 teeth
-	planet gear = 14 teeth
-	sun gear    = 8 teeth
+###EXAMPLES
+
+* Check if the following configuration is correct (R=36, P=14, S=8):
 
 ```
 > plgcalc.py 36:14:8
 36:14:08
 ```
-
-* Check if the following configuration is correct:
-	ring gear   = 36 teeth
-	planet gear = 14 teeth
-	sun gear    = 7 teeth
+* Check if the following configuration is correct (R=46, P=14, S=8):
 
 ```
 > plgcalc.py 36:14:7
 No results possible: invalid gear configuration
 ```
-
 * Print out all data regarding the first configuration:
-
+ 
 ```
 > plgcalc.py 36:14:8 --all
 Gear            Tp/Ts Ratio     Tp/Tr Ratio     Ts/Tr Ratio     Angle
@@ -45,22 +35,13 @@ Configuration   Ring fixed      Sun fixed       Planets fixed   Planet-Sun
 36:14:08        0.181818        0.818182        -4.500000       8.181818
 ```
 
-* Check the configuration that is possible for a planetary having:
-	ring gear   = 42 teeth
-	planet gear = 18 teeth
-	sun gear    = any
-
-   Note: for this configuration print Planet-Ring turn ratio (sun is fixed)
+* Check the configuration that is possible for a planetary having (R=42, P=18, S=any); for this configuration print Planet-Ring turn ratio (sun is fixed):
 
 ```	
 > plgcalc.py 42:18: --tpr
 42:18:06        0.875000
 ```
-
-* Print 10 possible configurations for a planetary setup that has:
-	sun gear    = 12 teeth
-	
-   Note: for the resulting configurations print Planets-Sun turn ratio (ring is fixed)
+* Print 10 possible configurations for a planetary setup that has (R=any, P=any, S=12); for the resulting configurations print Planets-Sun turn ratio (ring is fixed):
 
 ```
 > plgcalc.py ::12 -l 10 --tps --header
@@ -78,9 +59,7 @@ Configuration   Ring fixed
 32:10:12        0.272727
 ```
 
-* Generate all possible configurations for a planetary gear set with following params:
-	sun gear    = 9 teeth
-	planets     = 3 (evenly distributed)
+* Generate all possible configurations for a planetary gear set (R=any, P=any, S=9) with evenly distributed planet gears:
 
 ```
 > plgcalc.py ::9 -l 10 -e -p 3
@@ -114,7 +93,7 @@ Configuration   Ring fixed      Sun fixed       Planets fixed   Planet-Sun
 69:30:09        0.115385        0.884615        -7.666667       4.615385
 ```
 
-* Same as above, but use sun gear with 8 teeth, which  is an invalid configuration:
+* Same as above, but use sun gear with 8 teeth, which should be found as an invalid configuration:
 
 ```
 > plgcalc.py ::8 -l 10 -e -p 3 --all
